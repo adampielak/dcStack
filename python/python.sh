@@ -41,19 +41,11 @@ set -o verbose
 echo "============================ Building element: python ===================="
 echo "PATH=/usr/local/opt/python/bin:$PATH" | sudo tee -a /etc/environment
 
-sudo apt-get -qq update && apt-get -qq -y install python-software-properties software-properties-common && \
-    sudo add-apt-repository "deb http://gb.archive.ubuntu.com/ubuntu $(lsb_release -sc) universe" && \
-    sudo apt-get -qq update
-
-sudo add-apt-repository -y ppa:saiarcot895/myppa && \
-    sudo apt-get -qq update && \
-    sudo apt-get -qq -y install apt-fast
-
 export GIT_VERSION=2.17.0
 export PYTHON_VERSION=2.7.15
 
 sudo apt-fast -qq update
-sudo apt-fast -qq -y install wget sudo vim curl build-essential
+sudo apt-fast -qq -y install build-essential
 
 sudo apt-fast -qq -y install libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev libffi-dev python-dev
 pushd /tmp
