@@ -39,24 +39,30 @@ set -o errexit      # exit immediately if command exits with a non-zero status
 set -o verbose
 
 echo "============================ Building element: base ===================="
-sudo apt-get -qq update && sudo apt-get -qq -y install python-software-properties software-properties-common && \
-    sudo add-apt-repository "deb http://gb.archive.ubuntu.com/ubuntu $(lsb_release -sc) universe" && \
-    sudo add-apt-repository -yu ppa:pi-rho/dev  && \
-    sudo apt-get -qq update
+sudo apt-get -qq update
+sudo apt-get -qq -y install software-properties-common
 
-sudo add-apt-repository -y ppa:saiarcot895/myppa && \
-    sudo apt-get -qq update && \
-    sudo DEBIAN_FRONTEND=noninteractive apt-get -qq -y install apt-fast
+sudo add-apt-repository -yu ppa:apt-fast/stable
+sudo apt-get -qq update
+
+sudo DEBIAN_FRONTEND=noninteractive apt-get -qq -y install apt-fast
 
 # install the tools for encrypting the filesystem
 sudo apt-fast -y install cryptsetup-bin
 
 sudo apt-fast -qq -y install bc git wget sudo vim unzip curl language-pack-en jq
 
-sudo apt-fast -y install ncdu ntp fail2ban htop
+sudo apt-fast -qq -y install ncdu ntp fail2ban htop
 
-sudo apt-fast -y install tmux-next
-sudo mv /usr/bin/tmux-next /usr/bin/tmux
+# Install tmux by a normal package, until tmux-next is available for 18.04
+if [[ $(lsb_release -sc) == 'bionic' ]]; then
+    sudo apt-fast -y install tmux
+else
+    sudo add-apt-repository -yu ppa:pi-rho/dev
+    sudo apt-get update
+    sudo apt-fast -y install tmux-next
+    sudo mv /usr/bin/tmux-next /usr/bin/tmux
+fi
 
 pushd /tmp
 curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
